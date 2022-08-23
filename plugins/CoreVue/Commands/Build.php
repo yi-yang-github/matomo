@@ -59,7 +59,7 @@ class Build extends ConsoleCommand
             $plugins = $this->filterPluginsWithoutVueLibrary($plugins);
             if (empty($plugins)) {
                 $output->writeln("<error>No plugins to build!</error>");
-                return 1;
+                return self::FAILURE;
             }
         }
 
@@ -70,7 +70,7 @@ class Build extends ConsoleCommand
         Filesystem::unlinkRecursive(PIWIK_INCLUDE_PATH . '/node_modules/.cache', true);
 
         $failed = $this->build($output, $plugins, $printBuildCommand, $watch);
-        return $failed;
+        return $failed > 0 ? self::FAILURE : self::SUCCESS;
     }
 
     private function ensureUntranspiledPluginDependenciesArePresent($plugins)
