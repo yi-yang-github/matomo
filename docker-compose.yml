@@ -1,0 +1,53 @@
+# Adopt version 2 syntax:
+#   https://docs.docker.com/compose/compose-file/#/versioning
+version: '2.2'
+
+services:
+
+  mysql_base:
+    image: mysql:5.7
+    expose:
+      - "3306"
+    # Uncomment ports if you need to connect to the db using other mysql tools.
+    ports:
+      - "127.0.0.1:3308:3306"
+    # Set max_allowed_packet to 1GB (somehow needed for JSONAPI)
+    # Set optimizer_search_depth=0 to prevent slow query on MariaDB.
+    command: --max_allowed_packet=1073741824 --optimizer_search_depth=0
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: matomo_dev
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test123
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+
+
+
+  base:
+    # image: php:8-apache
+    image: yiyangdockerhub/web-drupal-dev:latest
+    ports:
+      - 8000:80
+      - 44300:443
+    hostname: matomo.test
+    # shm_size: 1G
+    depends_on:
+      mysql_base:
+        condition: service_healthy
+    # environment:
+    #   # - "DRUPAL_WITH_CACHE=1"
+    #   - "DRUPAL_REDIS_CACHE_PREFIX=base.test"
+    #   - "DRUPAL_REDIS_HOST=redis_base"
+    #   - "DRUPAL_REDIS_PORT=6379"
+    #   - "GOOGLE_APPLICATION_CREDENTIALS=/secret-files/recaptcha-338010-567566514e2e.json"
+    #   - "AWS_SHARED_CREDENTIALS_FILE=/secret-files/.aws/credentials"
+    #   # - "DRUPAL_SKIP_RECAPTCHA=1"
+    # env_file: ./env/secrets
+    volumes:
+      # Set up vhost file, httpd.conf etc.
+      - $PWD:/var/www/web
+
+networks:
+  default:
+    name: matomo_local_dev

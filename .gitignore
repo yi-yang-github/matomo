@@ -77,7 +77,7 @@ php_errors.log
 /plugins/.gitignore
 /js/container*.js
 /.docker
-docker-compose.yml
+#docker-compose.yml
 /node_modules/*
 !/node_modules/angular
 !/node_modules/angular-animate
