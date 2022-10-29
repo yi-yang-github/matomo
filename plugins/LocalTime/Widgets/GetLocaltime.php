@@ -70,8 +70,7 @@ class GetLocaltime extends Widget
      */
     public function render()
     {
-        // using the AngularJS adapter until the Vue migration is complete.
-        return '<div localtime-component></div>';
+        return $this->renderTemplate('localTime', []);
     }
 
 }
