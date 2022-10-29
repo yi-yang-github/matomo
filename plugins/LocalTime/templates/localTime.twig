@@ -1,7 +1,6 @@
 <div class="widgetContent localTimeComponent">
-    <div class="local">...</div>
+    <div class="local" align="left" style="padding-left:20px" class="row"></div>
     <script type="text/javascript">
-      
       let refreshLocalTime = () => {
         const date = new Date(); 
         document
@@ -11,4 +10,21 @@
 
       window.setInterval(refreshLocalTime, 1000);
     </script>
+    <div class="site" data-timezone="{{ siteTimezone }}" align="left" style="padding-left:20px" class="row"></div>
+    <script type="text/javascript">
+      
+      let refreshSiteTime = () => {
+        let tz =  document
+          .querySelector(".localTimeComponent .site").getAttribute('data-timezone');
+        const date = new Date();
+        document
+          .querySelector(".localTimeComponent .site")
+          .textContent = date.toLocaleDateString("en-US", {timeZone: tz}) 
+            + " " + date.toLocaleTimeString("en-US", {timeZone: tz}) 
+            + " " + tz;
+      };
+
+      window.setInterval(refreshSiteTime, 1000);
+    </script>
+    <div class="bottom" class="row">&nbsp;</div>
 </div>

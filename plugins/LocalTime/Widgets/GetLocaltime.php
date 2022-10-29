@@ -8,6 +8,8 @@
  */
 namespace Piwik\Plugins\LocalTime\Widgets;
 
+use Piwik\Common;
+use Piwik\Site;
 use Piwik\Widget\Widget;
 use Piwik\Widget\WidgetConfig;
 
@@ -70,7 +72,9 @@ class GetLocaltime extends Widget
      */
     public function render()
     {
-        return $this->renderTemplate('localTime', []);
+        $idSite  = Common::getRequestVar('idSite', 0, 'int');
+        $siteTimezone = Site::getTimezoneFor($idSite);
+        return $this->renderTemplate('localTime', ['siteTimezone' => $siteTimezone]);
     }
 
 }
