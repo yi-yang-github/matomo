@@ -242,6 +242,13 @@ class Request
 
     public function isRequestExcluded()
     {
+        // Exclude file:/// first.
+        $url = Common::getRequestVar('url', '', 'string', $this->params);
+        if (!empty($url) && preg_match("/^file:\/\/\//i", $url)) {
+            return true;
+        }
+
+        // Then exclude based on user defined rules.
         $excludedRequests = TrackerConfig::getConfigValue('exclude_requests', $this->getIdSiteIfExists());
 
         if (!empty($excludedRequests)) {
